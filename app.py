@@ -10,7 +10,7 @@ app = Flask(__name__)
 # Configurar CORS para permitir requests desde Netlify
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["*"],  
+        "origins": ["*"],  # En producción, reemplaza con tu dominio de Netlify
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }
@@ -214,8 +214,25 @@ def calcular_metricas(casas, hospitales, k_value):
 
 @app.route('/')
 def index():
-    """Renderiza la página principal."""
-    return render_template('index.html')
+    """Renderiza información de la API."""
+    return jsonify({
+        'message': 'Hospital Location System API',
+        'version': '1.0',
+        'endpoints': {
+            '/api/health': 'GET - Health check',
+            '/api/generar': 'POST - Generar distribución',
+            '/api/recalcular_k': 'POST - Recalcular con K diferente'
+        }
+    })
+
+
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """Endpoint para verificar que la API está funcionando."""
+    return jsonify({
+        'status': 'healthy',
+        'message': 'API is running correctly'
+    })
 
 
 @app.route('/api/generar', methods=['POST'])
