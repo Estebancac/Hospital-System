@@ -14,7 +14,7 @@
             <div class="header-content">
                 <div class="logo">
                     <i class="fas fa-hospital"></i>
-                    <h1>Sistemas de localización de hospitales</h1>
+                    <h1>Hospital Location System</h1>
                 </div>
                 <p class="subtitle">Optimización con K-Nearest Neighbors</p>
             </div>
@@ -67,10 +67,7 @@
                 </div>
 
                 <div id="kAutoSection" class="k-section active">
-                    <div class="info-box">
-                        <i class="fas fa-info-circle"></i>
-                        <span>K se calculará automáticamente como: <strong>K = 2 × hospitales + 1</strong></span>
-                    </div>
+                   
                     <div class="k-display">
                         <span class="k-label">K Óptimo:</span>
                         <span id="kOptimoDisplay" class="k-value">-</span>
@@ -149,70 +146,29 @@
                 </div>
             </div>
 
-            <!-- KNN Metrics -->
+            <!-- Algorithm Info -->
             <div class="metric-card glass-card">
-                <h3><i class="fas fa-brain"></i> Métricas KNN</h3>
-                <div class="knn-metrics">
-                    <div class="metric-row">
-                        <span class="metric-label">K Utilizado:</span>
-                        <span class="metric-value highlight" id="kUsado">-</span>
+                <h3><i class="fas fa-cogs"></i> Información del Algoritmo</h3>
+                <div class="algorithm-info">
+                    <div class="info-row">
+                        <span class="info-label">Algoritmo:</span>
+                        <span class="info-value">K-Means Mejorado</span>
                     </div>
-                    <div class="metric-row">
-                        <span class="metric-label">Accuracy:</span>
-                        <span class="metric-value" id="accuracy">-</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="accuracyBar"></div>
-                        </div>
+                    <div class="info-row">
+                        <span class="info-label">Iteraciones:</span>
+                        <span class="info-value" id="iteraciones">-</span>
                     </div>
-                    <div class="metric-row">
-                        <span class="metric-label">F1-Score (Macro):</span>
-                        <span class="metric-value" id="f1Score">-</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="f1Bar"></div>
-                        </div>
+                    <div class="info-row">
+                        <span class="info-label">Hospitales ubicados:</span>
+                        <span class="info-value" id="numHospitales">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Casas asignadas:</span>
+                        <span class="info-value" id="numCasas">-</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Balance Metrics -->
-            <div class="metric-card glass-card">
-                <h3><i class="fas fa-balance-scale"></i> Balance de Carga</h3>
-                <div class="balance-content">
-                    <div class="balance-score">
-                        <canvas id="balanceChart" width="120" height="120"></canvas>
-                        <div class="balance-text">
-                            <span class="balance-percentage" id="balancePercentage">-</span>
-                            <span class="balance-label">Eficiencia</span>
-                        </div>
-                    </div>
-                    <div class="balance-info">
-                        <p><strong>Coeficiente de Variación:</strong> <span id="coefVariacion">-</span></p>
-                        <p class="info-text">Valores cercanos a 0 indican mejor balance entre hospitales</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hospital Distribution -->
-            <div class="metric-card glass-card full-width">
-                <h3><i class="fas fa-chart-bar"></i> Distribución por Hospital</h3>
-                <div class="hospital-distribution" id="hospitalDistribution">
-                    <!-- Dynamic content -->
-                </div>
-            </div>
-
-            <!-- K Comparison Tool -->
-            <div class="metric-card glass-card full-width">
-                <h3><i class="fas fa-exchange-alt"></i> Comparador de K</h3>
-                <p class="section-description">Cambia el valor de K para ver cómo afecta las métricas de clasificación</p>
-                <div class="k-comparison">
-                    <div class="slider-container">
-                        <label for="kComparison">Valor K:</label>
-                        <input type="range" id="kComparison" min="1" max="51" value="5" step="2" class="slider">
-                        <span id="kComparisonValue" class="slider-value">5</span>
-                    </div>
-                    <button id="recalcularBtn" class="btn btn-secondary">
-                        <i class="fas fa-sync-alt"></i> Recalcular Métricas
-                    </button>
+                <div class="info-description">
+                    <p><i class="fas fa-info-circle"></i> El algoritmo agrupa las casas en clusters y ubica hospitales en posiciones óptimas minimizando la distancia promedio.</p>
                 </div>
             </div>
         </section>

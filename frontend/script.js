@@ -79,12 +79,6 @@ function initializeEventListeners() {
     // K manual slider
     document.getElementById('kManual').addEventListener('input', updateKManualSlider);
     
-    // K comparison slider
-    document.getElementById('kComparison').addEventListener('input', updateKComparisonSlider);
-    
-    // Recalculate button
-    document.getElementById('recalcularBtn').addEventListener('click', recalcularConK);
-    
     // Zoom controls
     document.getElementById('zoomInBtn').addEventListener('click', () => zoom(1.2));
     document.getElementById('zoomOutBtn').addEventListener('click', () => zoom(0.8));

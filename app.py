@@ -10,14 +10,14 @@ app = Flask(__name__)
 # Configurar CORS para permitir requests desde Netlify
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["*"],  # En producción, reemplaza con tu dominio de Netlify
+        "origins": ["*"],  
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"]
     }
 })
 
 # ============================================================================
-# FUNCIONES DEL ALGORITMO KNN Y K-MEANS
+# FUNCIONES DEL ALGORITMO  Y K-MEANS
 # ============================================================================
 
 def calcular_distancia_euclidiana(punto1, punto2):
@@ -40,7 +40,7 @@ def encontrar_k_vecinos(punto, datos_entrenamiento, k):
 
 
 def predecir_knn(punto, datos_entrenamiento, k):
-    """Predice la clase de un punto usando KNN."""
+    """Predice la clase de un punto usando K-Means."""
     vecinos = encontrar_k_vecinos(punto, datos_entrenamiento, k)
     contador = Counter(vecinos)
     clase_predicha = contador.most_common(1)[0][0]
@@ -163,7 +163,7 @@ def calcular_metricas(casas, hospitales, k_value):
     desviacion_std = float(np.std(distancias_minimas))
     cv_balance = float(np.std(asignaciones) / np.mean(asignaciones)) if np.mean(asignaciones) > 0 else 0
     
-    # Calcular F1-Score usando KNN
+    # Calcular F1-Score usando K-Means
     datos_entrenamiento = [(casa, asignaciones_reales[i]) for i, casa in enumerate(casas)]
     k_efectivo = min(k_value, len(casas) - 1)
     predicciones = []
