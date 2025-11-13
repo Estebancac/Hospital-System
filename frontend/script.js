@@ -13,7 +13,7 @@
 // Ejemplo de URL de Render:
 // const API_URL = 'https://hospital-knn-api-abcd.onrender.com';
 
-const API_URL = 'https://tu-app.onrender.com';  // ← REEMPLAZAR CON TU URL DE RENDER
+const API_URL = 'https://hospital-system-api-e50z.onrender.com';  // ← REEMPLAZAR CON TU URL DE RENDER
 
 // Para desarrollo local, usa:
 // const API_URL = 'http://localhost:5000';
