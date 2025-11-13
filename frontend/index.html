@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ubicación de Hospitales - KNN</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-hospital"></i>
+                    <h1>Sistemas de localización de hospitales</h1>
+                </div>
+                <p class="subtitle">Optimización con K-Nearest Neighbors</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Control Panel -->
+        <section class="control-panel glass-card">
+            <h2><i class="fas fa-sliders-h"></i> Panel de Control</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="matriz">
+                        <i class="fas fa-th"></i> Tamaño de Matriz (M x M)
+                    </label>
+                    <input type="number" id="matriz" min="5" max="1000" value="50" class="input-field">
+                    <span class="input-hint">Rango: 5-1000</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="casas">
+                        <i class="fas fa-home"></i> Número de Casas
+                    </label>
+                    <input type="number" id="casas" min="1" max="10000" value="200" class="input-field">
+                    <span class="input-hint">Mínimo: 1</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="hospitales">
+                        <i class="fas fa-hospital-alt"></i> Número de Hospitales
+                    </label>
+                    <input type="number" id="hospitales" min="1" max="500" value="10" class="input-field">
+                    <span class="input-hint">Mínimo: 1</span>
+                </div>
+            </div>
+
+            <!-- K Value Control -->
+            <div class="k-control">
+                <div class="k-header">
+                    <h3><i class="fas fa-chart-line"></i> Configuración de K (KNN)</h3>
+                    <div class="toggle-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="kAutoToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-label">K Automático</span>
+                    </div>
+                </div>
+
+                <div id="kAutoSection" class="k-section active">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <span>K se calculará automáticamente como: <strong>K = 2 × hospitales + 1</strong></span>
+                    </div>
+                    <div class="k-display">
+                        <span class="k-label">K Óptimo:</span>
+                        <span id="kOptimoDisplay" class="k-value">-</span>
+                    </div>
+                </div>
+
+                <div id="kManualSection" class="k-section">
+                    <label for="kManual">Valor K Manual:</label>
+                    <div class="slider-container">
+                        <input type="range" id="kManual" min="1" max="51" value="5" step="2" class="slider">
+                        <span id="kManualValue" class="slider-value">5</span>
+                    </div>
+                    <p class="k-hint">Solo valores impares (evita empates en votación)</p>
+                </div>
+            </div>
+
+            <button id="generateBtn" class="btn btn-primary">
+                <i class="fas fa-play"></i> Generar Distribución
+            </button>
+        </section>
+
+        <!-- Visualization Section -->
+        <section class="visualization-section glass-card" id="vizSection" style="display: none;">
+            <div class="viz-header">
+                <h2><i class="fas fa-chart-area"></i> Visualización</h2>
+                <div class="view-controls">
+                    <button id="zoomInBtn" class="btn-icon" title="Acercar">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button id="zoomOutBtn" class="btn-icon" title="Alejar">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button id="resetViewBtn" class="btn-icon" title="Resetear Vista">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="mapCanvas"></canvas>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="legend-icon house">🏠</span>
+                    <span>Casas</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-icon hospital">🏥</span>
+                    <span>Hospitales</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metrics Section -->
+        <section class="metrics-section" id="metricsSection" style="display: none;">
+            <!-- Distance Metrics -->
+            <div class="metric-card glass-card">
+                <h3><i class="fas fa-ruler"></i> Métricas de Distancia</h3>
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <span class="metric-label">Promedio</span>
+                        <span class="metric-value" id="distPromedio">-</span>
+                        <span class="metric-unit">unidades</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Máxima</span>
+                        <span class="metric-value" id="distMaxima">-</span>
+                        <span class="metric-unit">unidades</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-label">Desviación Std</span>
+                        <span class="metric-value" id="distDesviacion">-</span>
+                        <span class="metric-unit">unidades</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KNN Metrics -->
+            <div class="metric-card glass-card">
+                <h3><i class="fas fa-brain"></i> Métricas KNN</h3>
+                <div class="knn-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">K Utilizado:</span>
+                        <span class="metric-value highlight" id="kUsado">-</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Accuracy:</span>
+                        <span class="metric-value" id="accuracy">-</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="accuracyBar"></div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">F1-Score (Macro):</span>
+                        <span class="metric-value" id="f1Score">-</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="f1Bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Balance Metrics -->
+            <div class="metric-card glass-card">
+                <h3><i class="fas fa-balance-scale"></i> Balance de Carga</h3>
+                <div class="balance-content">
+                    <div class="balance-score">
+                        <canvas id="balanceChart" width="120" height="120"></canvas>
+                        <div class="balance-text">
+                            <span class="balance-percentage" id="balancePercentage">-</span>
+                            <span class="balance-label">Eficiencia</span>
+                        </div>
+                    </div>
+                    <div class="balance-info">
+                        <p><strong>Coeficiente de Variación:</strong> <span id="coefVariacion">-</span></p>
+                        <p class="info-text">Valores cercanos a 0 indican mejor balance entre hospitales</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hospital Distribution -->
+            <div class="metric-card glass-card full-width">
+                <h3><i class="fas fa-chart-bar"></i> Distribución por Hospital</h3>
+                <div class="hospital-distribution" id="hospitalDistribution">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+
+            <!-- K Comparison Tool -->
+            <div class="metric-card glass-card full-width">
+                <h3><i class="fas fa-exchange-alt"></i> Comparador de K</h3>
+                <p class="section-description">Cambia el valor de K para ver cómo afecta las métricas de clasificación</p>
+                <div class="k-comparison">
+                    <div class="slider-container">
+                        <label for="kComparison">Valor K:</label>
+                        <input type="range" id="kComparison" min="1" max="51" value="5" step="2" class="slider">
+                        <span id="kComparisonValue" class="slider-value">5</span>
+                    </div>
+                    <button id="recalcularBtn" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Recalcular Métricas
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Calculando distribución óptima...</p>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
